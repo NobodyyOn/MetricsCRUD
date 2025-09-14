@@ -28,7 +28,34 @@ public class ClienteVista extends JFrame{
         JButton btnActualizarUsuario = new JButton("Actualizar U");
         JButton btnBorrarUsuario = new JButton("Borrar U");
 
-
+        // Asignar acciones a los botones
+        btnCrearUsuario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Crear Usuario");
+            }
+        });
+        // Asignar acciones a los botones
+        btnLeerUsuario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Leer Usuario");
+            }
+        });
+        // Asignar acciones a los botones
+        btnActualizarUsuario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Actualizar Usuario");
+            }
+        });
+        // Asignar acciones a los botones
+        btnBorrarUsuario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Borrar Usuario");
+            }
+        });
 
 
         // Añadir botones al panel
