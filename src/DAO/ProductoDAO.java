@@ -1,4 +1,4 @@
-package controlador.DAO;
+package DAO;
 
 import java.util.List;
 
@@ -6,9 +6,10 @@ import modelo.Producto;
 
 public class ProductoDAO {
 
-    //TODO: Implementar los métodos CRUD
+    // TODO: Implementar los métodos CRUD
 
-    public void insertar(Producto nuevoCliente) {}
+    public void insertar(Producto nuevoCliente) {
+    }
 
     public void actualizar(Producto clienteActualizado) {
     }
@@ -17,6 +18,6 @@ public class ProductoDAO {
     }
 
     public List<Producto> listar() {
-        return null;
+        throw new UnsupportedOperationException("Unimplemented method 'listar'");
     }
 }

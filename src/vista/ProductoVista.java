@@ -1,7 +1,6 @@
 
 package vista;
 
-
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,8 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class ProductoVista extends JFrame{
+public class ProductoVista extends JFrame {
 
+    public JButton btnCrearProducto, btnLeerProducto, btnListarProductos, btnBorrarProducto, btnActualizarProducto;
 
     public ProductoVista() {
         super("Producto");
@@ -21,12 +21,13 @@ public class ProductoVista extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Panel con diseño de dos filas para colocar los botones
-        JPanel panel = new JPanel(new GridLayout(1,4,10,450));
+        JPanel panel = new JPanel(new GridLayout(1, 4, 10, 450));
 
-        JButton btnCrearProducto = new JButton("Crear P");
-        JButton btnLeerProducto = new JButton("leer P");
-        JButton btnActualizarProducto = new JButton("Actualizar P");
-        JButton btnBorrarProducto = new JButton("Borrar P");
+        this.btnCrearProducto = new JButton("Crear P");
+        this.btnLeerProducto = new JButton("Leer P");
+        this.btnActualizarProducto = new JButton("Actualizar P");
+        this.btnBorrarProducto = new JButton("Borrar P");
+        this.btnListarProductos = new JButton("Listar P");
 
         // Asignar acciones a los botones
         btnCrearProducto.addActionListener(new ActionListener() {
@@ -57,14 +58,34 @@ public class ProductoVista extends JFrame{
             }
         });
 
-
         // Añadir botones al panel
-        panel.add( btnCrearProducto);
-        panel.add( btnLeerProducto);
-        panel.add( btnActualizarProducto);
-        panel.add( btnBorrarProducto );
+        panel.add(btnCrearProducto);
+        panel.add(btnLeerProducto);
+        panel.add(btnActualizarProducto);
+        panel.add(btnBorrarProducto);
+        panel.add(btnListarProductos);
 
         // Añadir panel a la ventana
         getContentPane().add(panel);
+    }
+
+    public void addCrearProductoListener(ActionListener listener) {
+        btnCrearProducto.addActionListener(listener);
+    }
+
+    public void addLeerProductoListener(ActionListener listener) {
+        btnLeerProducto.addActionListener(listener);
+    }
+
+    public void addActualizarProductoListener(ActionListener listener) {
+        btnActualizarProducto.addActionListener(listener);
+    }
+
+    public void addEliminarProductoListener(ActionListener listener) {
+        btnBorrarProducto.addActionListener(listener);
+    }
+
+    public void addListarProductosListener(ActionListener listener) {
+        btnListarProductos.addActionListener(listener);
     }
 }

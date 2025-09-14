@@ -1,4 +1,4 @@
-package controlador.DAO;
+package DAO;
 
 import java.io.File;
 import java.io.FileReader;
@@ -31,8 +31,7 @@ public class JsonUtil {
         checkJson(ruta);
         try (FileWriter writer = new FileWriter(ruta)) {
             gson.toJson(datos, writer);
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

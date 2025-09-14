@@ -1,16 +1,15 @@
 
 package vista;
 
-
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class ClienteVista extends JFrame{
+public class ClienteVista extends JFrame {
 
+    public JButton btnCrearUsuario, btnLeerUsuario, btnBorrarUsuario, btnActualizarUsuario;
 
     public ClienteVista() {
         super("Cliente");
@@ -21,50 +20,39 @@ public class ClienteVista extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Panel con diseño de dos filas para colocar los botones
-        JPanel panel = new JPanel(new GridLayout(1,4,10,450));
+        JPanel panel = new JPanel(new GridLayout(1, 4, 10, 450));
 
-        JButton btnCrearUsuario = new JButton("Crear U");
-        JButton btnLeerUsuario = new JButton("leer U");
-        JButton btnActualizarUsuario = new JButton("Actualizar U");
-        JButton btnBorrarUsuario = new JButton("Borrar U");
-
-        // Asignar acciones a los botones
-        btnCrearUsuario.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Crear Usuario");
-            }
-        });
-        // Asignar acciones a los botones
-        btnLeerUsuario.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Leer Usuario");
-            }
-        });
-        // Asignar acciones a los botones
-        btnActualizarUsuario.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Actualizar Usuario");
-            }
-        });
-        // Asignar acciones a los botones
-        btnBorrarUsuario.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Borrar Usuario");
-            }
-        });
-
-
+        this.btnCrearUsuario = new JButton("Crear U");
+        this.btnLeerUsuario = new JButton("leer U");
+        this.btnActualizarUsuario = new JButton("Actualizar U");
+        this.btnBorrarUsuario = new JButton("Borrar U");
         // Añadir botones al panel
-        panel.add( btnCrearUsuario);
-        panel.add( btnLeerUsuario);
-        panel.add( btnActualizarUsuario);
-        panel.add( btnBorrarUsuario );
+        panel.add(btnCrearUsuario);
+        panel.add(btnLeerUsuario);
+        panel.add(btnActualizarUsuario);
+        panel.add(btnBorrarUsuario);
 
         // Añadir panel a la ventana
         getContentPane().add(panel);
+    }
+
+    public void addCrearClienteListener(ActionListener listener) {
+        btnCrearUsuario.addActionListener(listener);
+    }
+
+    public void addLeerClienteListener(ActionListener listener) {
+        btnLeerUsuario.addActionListener(listener);
+    }
+
+    public void addActualizarClienteListener(ActionListener listener) {
+        btnActualizarUsuario.addActionListener(listener);
+    }
+
+    public void addEliminarClienteListener(ActionListener listener) {
+        btnBorrarUsuario.addActionListener(listener);
+    }
+
+    public void addListarClientesListener(ActionListener listener) {
+        btnBorrarUsuario.addActionListener(listener);
     }
 }

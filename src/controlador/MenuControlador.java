@@ -1,7 +1,7 @@
 package controlador;
 
-import controlador.DAO.ClienteDAO;
-import controlador.DAO.ProductoDAO;
+import DAO.ClienteDAO;
+import DAO.ProductoDAO;
 import vista.ClienteVista;
 import vista.MenuGeneral;
 import vista.ProductoVista;
@@ -10,6 +10,7 @@ public class MenuControlador {
 
     private MenuGeneral menuGeneral;
 
+    @SuppressWarnings("unused")
     public MenuControlador(MenuGeneral menuGeneral) {
         this.menuGeneral = menuGeneral;
         menuGeneral.addIrClientes(e -> irClientes());
@@ -25,13 +26,12 @@ public class MenuControlador {
         // Lógica para abrir la ventana de clientes
         ClienteControlador clienteCtrl = new ClienteControlador(new ClienteVista(),
                 new ClienteDAO());
-            clienteCtrl.iniciar();
-        // Aquí se podría instanciar ClienteVista y ClienteControlador
+        clienteCtrl.iniciar();
     }
 
     private void irProductos() {
         ProductoControlador productoCtrl = new ProductoControlador(new ProductoVista(),
                 new ProductoDAO());
-            productoCtrl.iniciar();
+        productoCtrl.iniciar();
     }
 }
