@@ -13,6 +13,8 @@ import javax.swing.JPanel;
  */
 public class MenuGeneral extends JFrame {
 
+    public JButton btnClientes, btnProductos;
+    
     public MenuGeneral() {
         super("Menú General");
 
@@ -24,27 +26,27 @@ public class MenuGeneral extends JFrame {
         // Panel con diseño de dos filas para colocar los botones
         JPanel panel = new JPanel(new GridLayout(2, 1, 10, 10));
 
-        JButton btnClientes = new JButton("Clientes");
-        JButton btnProductos = new JButton("Productos");
+        this.btnClientes = new JButton("Clientes");
+        this.btnProductos = new JButton("Productos");
 
         // Asignar acciones a los botones
-        btnClientes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Abrir la ventana de clientes
-                ClienteVista vistaClientes = new ClienteVista();
-                //vistaClientes.setVisible(true);
-            }
-        });
+        // btnClientes.addActionListener(new ActionListener() {
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         // Abrir la ventana de clientes
+        //         ClienteVista vistaClientes = new ClienteVista();
+        //         //vistaClientes.setVisible(true);
+        //     }
+        // });
 
-        btnProductos.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Abrir la ventana de productos
-                ProductoVista vistaProductos = new ProductoVista();
-                //vistaProductos.setVisible(true);
-            }
-        });
+        // btnProductos.addActionListener(new ActionListener() {
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         // Abrir la ventana de productos
+        //         ProductoVista vistaProductos = new ProductoVista();
+        //         //vistaProductos.setVisible(true);
+        //     }
+        // });
 
         // Añadir botones al panel
         panel.add(btnClientes);
@@ -53,7 +55,12 @@ public class MenuGeneral extends JFrame {
         // Añadir panel a la ventana
         getContentPane().add(panel);
     }
+       public void addIrClientes(ActionListener listener){
+            btnClientes.addActionListener(listener);
+        }
+       public void addIrProductos(ActionListener listener){
+            btnProductos.addActionListener(listener);
+        }
 
-    
 }
 

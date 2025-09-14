@@ -8,6 +8,8 @@ import modelo.Cliente;
 
 public class ClienteDAO {
 
+    //TODO: Implementar los métodos CRUD
+
     public void insertar(Cliente nuevoCliente) {}
 
     public void actualizar(Cliente clienteActualizado) {
