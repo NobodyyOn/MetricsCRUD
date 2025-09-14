@@ -1,22 +1,24 @@
 package controlador;
 
-import DAO.ClienteDAO;
+import DAO.ClienteDAOimpl;
 import modelo.Cliente;
 import vista.ClienteVista;
+import java.util.Random;
 
 public class ClienteControlador {
 
 	private ClienteVista vista;
-	private ClienteDAO dao;
+	private ClienteDAOimpl clienteDaoImpl;
 
-	@SuppressWarnings("unused")
-	public ClienteControlador(ClienteVista vista, ClienteDAO dao) {
+	public ClienteControlador(ClienteVista vista, ClienteDAOimpl clienteDaoImpl) {
 		this.vista = vista;
-		this.dao = dao;
-		vista.addCrearClienteListener(e -> crearCliente());
-		vista.addLeerClienteListener(e -> leerCliente());
-		vista.addActualizarClienteListener(e -> actualizarCliente());
-		vista.addEliminarClienteListener(e -> eliminarCliente());
+		this.clienteDaoImpl = clienteDaoImpl;
+		
+		//TODO: REEMPLAZAR POR INPUT
+		vista.addCrearClienteListener(e -> crearCliente(String.valueOf("nombre"), String.valueOf("telefono"), String.valueOf("direccion"))); 
+		vista.addLeerClienteListener(e -> buscarCliente(Integer.parseInt("1")));
+		vista.addActualizarClienteListener(e -> actualizarCliente(Integer.parseInt("1"), String.valueOf("nombre"), String.valueOf("telefono"), String.valueOf("direccion")));
+		vista.addEliminarClienteListener(e -> eliminarCliente(Integer.parseInt("1")));
 		vista.addListarClientesListener(e -> listarClientes());
 	}
 
@@ -24,20 +26,40 @@ public class ClienteControlador {
 		vista.setVisible(true);
 	}
 
-	// TODO: Implementar los métodos CRUD
-	public void crearCliente() {
+	public void buscarCliente(int idCliente) {
+		if( idCliente <= 0) {
+			throw new IllegalArgumentException("El ID del cliente debe ser mayor que cero");
+		}
+		clienteDaoImpl.buscar(idCliente);
 	}
 
-	public void leerCliente() {
+	public void crearCliente(String nombre, String telefono, String direccion) {
+		if (nombre == null || telefono == null || direccion == null) {
+			throw new IllegalArgumentException("El nombre, teléfono y dirección no pueden estar vacíos");
+		}
+
+		Random random = new Random();
+		int id = random.nextInt(1000) + 1;
+		clienteDaoImpl.insertar(new Cliente(id, nombre, telefono, direccion));
 	}
 
-	public void actualizarCliente() {
+
+	public void actualizarCliente(int idCliente, String nombre, String telefono, String direccion) {
+		if (idCliente <= 0) {
+			throw new IllegalArgumentException("El ID del cliente debe ser mayor que cero");
+		}
+		clienteDaoImpl.actualizar(new Cliente(idCliente, nombre, telefono, direccion));
 	}
 
-	public void eliminarCliente() {
+	public void eliminarCliente(int idCliente) {
+		if(idCliente <= 0) {
+			throw new IllegalArgumentException("El ID del cliente debe ser mayor que cero");
+		}
+		clienteDaoImpl.eliminar(idCliente);
 	}
 
 	public void listarClientes() {
+		clienteDaoImpl.listar();
 	}
 
 }

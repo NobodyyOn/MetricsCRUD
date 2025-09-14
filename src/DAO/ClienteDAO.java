@@ -4,20 +4,18 @@ import java.util.List;
 
 import modelo.Cliente;
 
-public class ClienteDAO {
+interface ClienteDAO {
 
-    // TODO: Implementar los métodos CRUD
+    public List<Cliente> listar();
 
-    public void insertar(Cliente nuevoCliente) {
-    }
+    public Cliente buscar(int idCliente);
 
-    public void actualizar(Cliente clienteActualizado) {
-    }
+    public void insertar(Cliente nuevoCliente);
 
-    public void eliminar(int idCliente) {
-    }
+    public void actualizar(Cliente clienteActualizado);
 
-    public List<Cliente> listar() {
-        throw new UnsupportedOperationException("Unimplemented method 'listar'");
-    }
+    public void eliminar(int idCliente);
+    
+
+    
 }
