@@ -1,56 +1,77 @@
 package DAO;
 
-import modelo.Cliente;
 import java.util.List;
 
+import modelo.Cliente;
+
 public class ClienteDAOimpl implements ClienteDAO {
+    protected static final String ruta = "json/clientes.json";
     private JsonUtil jsonUtil = new JsonUtil();
+    Cliente cliente;
 
-    @Override
     public List<Cliente> listar() {
-        return jsonUtil.leerJson("clientes.json", Cliente.class);
+        return jsonUtil.leerJson(ruta, Cliente.class);
     }
 
-    @Override
-    public Cliente buscar(int idCliente) {
-        List <Cliente> clientes = listar();
-        if(!clientes.contains(new Cliente(idCliente, null, null, null))) {
-            throw new IllegalArgumentException("El cliente con ID " + idCliente + " no existe");
-        }
-        return clientes.get(clientes.indexOf(new Cliente(idCliente, null, null, null)));
+    public Cliente seleccionar(int idCliente) {
+        return buscarCliente(idCliente);
     }
 
-    @Override
+
     public void insertar(Cliente nuevoCliente) {
-        List<Cliente> clientes = listar();
-        if (clientes.contains(nuevoCliente)) {
+
+        if (existeCliente(nuevoCliente.getId())) {
             throw new IllegalArgumentException("El cliente ya existe");
         }
+
+        List<Cliente> clientes = listar();
         clientes.add(nuevoCliente);
-        jsonUtil.escribirJson("clientes.json", clientes);
+        jsonUtil.escribirJson(ruta, clientes);
 
     }
 
-    @Override
     public void actualizar(Cliente clienteActualizado) {
         List<Cliente> clientes = listar();
-        if(!clientes.contains(clienteActualizado)) {
-            throw new IllegalArgumentException("El cliente con ID " + clienteActualizado.getId() + " no existe");
+        int index = -1;
+        for (int i = 0; i < clientes.size(); i++) {
+            if (clientes.get(i).getId() == clienteActualizado.getId()) {
+                index = i;
+                break;
+            }
         }
-        clientes.set(clientes.indexOf(clienteActualizado), clienteActualizado);
-        jsonUtil.escribirJson("clientes.json", clientes);
+        if (index == -1) {
+            throw new IllegalArgumentException("El cliente no existe");
+        }
+        clientes.set(index, clienteActualizado);
+        jsonUtil.escribirJson(ruta, clientes);
 
     }
 
-    @Override
     public void eliminar(int idCliente) {
         List<Cliente> clientes = listar();
-        if (clientes.removeIf(cliente -> cliente.getId() == idCliente)) {
-            jsonUtil.escribirJson("clientes.json", clientes);
-        } else {
-            throw new IllegalArgumentException("El cliente con ID " + idCliente + " no existe");
+        int index = -1;
+        for (int i = 0; i < clientes.size(); i++) {
+            if (clientes.get(i).getId() == idCliente) {
+                index = i;
+                break;
+            }
         }
+        if (index == -1) {
+            throw new IllegalArgumentException("El cliente no existe");
+        }
+        clientes.remove(index);
+        jsonUtil.escribirJson(ruta, clientes);
 
     }
-    
+
+    private Cliente buscarCliente(int idCliente) {
+        return listar().stream()
+                .filter(c -> c.getId() == idCliente)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("El cliente con ID " + idCliente + " no existe"));
+    }
+
+    private boolean existeCliente(int idCliente) {
+        return listar().stream().anyMatch(c -> c.getId() == idCliente);
+    }
 }

@@ -9,16 +9,18 @@ public class ClienteControlador {
 
 	private ClienteVista vista;
 	private ClienteDAOimpl clienteDaoImpl;
+	private Cliente cliente;
 
+	@SuppressWarnings("unused")
 	public ClienteControlador(ClienteVista vista, ClienteDAOimpl clienteDaoImpl) {
 		this.vista = vista;
 		this.clienteDaoImpl = clienteDaoImpl;
 		
 		//TODO: REEMPLAZAR POR INPUT
-		vista.addCrearClienteListener(e -> crearCliente(String.valueOf("nombre"), String.valueOf("telefono"), String.valueOf("direccion"))); 
-		vista.addLeerClienteListener(e -> buscarCliente(Integer.parseInt("1")));
-		vista.addActualizarClienteListener(e -> actualizarCliente(Integer.parseInt("1"), String.valueOf("nombre"), String.valueOf("telefono"), String.valueOf("direccion")));
-		vista.addEliminarClienteListener(e -> eliminarCliente(Integer.parseInt("1")));
+		vista.addCrearClienteListener(e -> crearCliente(String.valueOf("nombre"), String.valueOf("telefono"), String.valueOf("direccion")));
+		vista.addLeerClienteListener(e -> buscarCliente(Integer.parseInt("220")));
+		vista.addActualizarClienteListener(e -> actualizarCliente(Integer.parseInt("220"), String.valueOf("nombreNuevo"), String.valueOf("telefono"), String.valueOf("direccion")));
+		vista.addEliminarClienteListener(e -> eliminarCliente(Integer.parseInt("82")));
 		vista.addListarClientesListener(e -> listarClientes());
 	}
 
@@ -27,10 +29,11 @@ public class ClienteControlador {
 	}
 
 	public void buscarCliente(int idCliente) {
-		if( idCliente <= 0) {
-			throw new IllegalArgumentException("El ID del cliente debe ser mayor que cero");
-		}
-		clienteDaoImpl.buscar(idCliente);
+		// if( idCliente <= 0) {
+		// 	throw new IllegalArgumentException("El ID del cliente debe ser mayor que cero");
+		// }
+		cliente = clienteDaoImpl.seleccionar(idCliente);
+		System.out.println(cliente.getNombre());
 	}
 
 	public void crearCliente(String nombre, String telefono, String direccion) {
@@ -49,6 +52,7 @@ public class ClienteControlador {
 			throw new IllegalArgumentException("El ID del cliente debe ser mayor que cero");
 		}
 		clienteDaoImpl.actualizar(new Cliente(idCliente, nombre, telefono, direccion));
+		cliente = clienteDaoImpl.seleccionar(idCliente);
 	}
 
 	public void eliminarCliente(int idCliente) {

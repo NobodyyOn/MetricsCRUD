@@ -6,7 +6,7 @@ import modelo.Producto;
 
 public class ProductoDAO {
 
-    // TODO: Implementar los métodos CRUD
+    // TODO: Implementar los métodos CRUD como en ClienteDAOimpl.java
 
     public void insertar(Producto nuevoCliente) {
     }
