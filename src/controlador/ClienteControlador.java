@@ -113,6 +113,7 @@ public class ClienteControlador {
         int id = random.nextInt(1000) + 1;
         try {
             clienteDaoImpl.insertar(new Cliente(id, nombre, telefono, direccion));
+            this.listarClientes();
             vista.mostrarPopup("Cliente creado con ID: " + id);
         } catch (IllegalArgumentException ex) {
             vista.mostrarPopup(ex.getMessage());
@@ -126,7 +127,8 @@ public class ClienteControlador {
         }
         try {
             clienteDaoImpl.actualizar(new Cliente(idCliente, nombre, telefono, direccion));
-            cliente = clienteDaoImpl.buscar(idCliente);
+            //cliente = clienteDaoImpl.buscar(idCliente);
+            this.buscarCliente(idCliente);
             vista.mostrarPopup("Cliente actualizado");
         } catch (IllegalArgumentException ex) {
             vista.mostrarPopup(ex.getMessage());
@@ -141,6 +143,7 @@ public class ClienteControlador {
         try {
             clienteDaoImpl.eliminar(idCliente);
             vista.mostrarPopup("Cliente eliminado");
+            this.listarClientes();
         } catch (IllegalArgumentException e) {
             vista.mostrarPopup("Cliente no encontrado");
         }

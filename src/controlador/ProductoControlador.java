@@ -1,4 +1,3 @@
-
 package controlador;
 
 import DAO.ProductoDAO;
@@ -18,87 +17,91 @@ public class ProductoControlador {
 	public ProductoControlador(ProductoVista vista, ProductoDAO productoDaoImpl) {
 		this.vista = vista;
 		this.productoDaoImpl = productoDaoImpl;
-		
-		vista.addCrearProductoListener(e -> {
-			modoEdicion = false;
-			idEdicion = -1;
-			vista.setNombre("");
-			vista.setPrecio(0);
-			vista.setStock(0);
-			vista.mostrarDialogo(false); // Mostrar formulario para crear
-		});
 
-		vista.addActualizarProductoListener(e -> {
-			int id = vista.getIdSeleccionado();
-			if(id == -1) {
-				// Si no hay selección, intentar con el campo de búsqueda
-				id = vista.getIdBusqueda();
-				if(id == -1) {
-					vista.mostrarPopup("Debe seleccionar un producto en la tabla o ingresar un ID válido");
-					return;
-				}
-			}
-			// Buscar el producto y mostrar el formulario
-			try {
-				Producto p = productoDaoImpl.buscar(id);
-				modoEdicion = true;
-				idEdicion = id;
-				vista.setNombre(p.getNombre());
-				vista.setPrecio(p.getPrecio());
-				vista.setStock(p.getStock());
-				vista.mostrarDialogo(true); // Mostrar formulario para actualizar
-			} catch (IllegalArgumentException ex) {
-				vista.mostrarPopup("Producto no encontrado");
-			}
-		});
+		inicializarListeners();
+	}
 
-		// Listener para el botón Guardar del formulario
-		vista.addGuardarProductoListener(e -> {
-			String nombre = vista.getNombre();
-			double precio = vista.getPrecio();
-			int stock = vista.getStock();
-			
-			if (nombre.isEmpty()) {
-				vista.mostrarPopup("El nombre es obligatorio");
-				return;
-			}
-			if (precio <= 0) {
-				vista.mostrarPopup("El precio debe ser mayor que cero");
-				return;
-			}
-			if (stock < 0) {
-				vista.mostrarPopup("El stock no puede ser negativo");
-				return;
-			}
-			
-			if (modoEdicion && idEdicion != -1) {
-				actualizarProducto(idEdicion, nombre, precio, stock);
-			} else {
-				crearProducto(nombre, precio, stock);
-			}
-			vista.cerrarDialogo();
-		});
-
+	@SuppressWarnings("unused")
+	private void inicializarListeners() {
+		vista.addCrearProductoListener(e -> mostrarFormularioCrear());
+		vista.addActualizarProductoListener(e -> mostrarFormularioActualizar());
+		vista.addGuardarProductoListener(e -> guardarProducto());
 		vista.addLeerProductoListener(e -> buscarProducto(vista.getIdBusqueda()));
-		vista.addEliminarProductoListener(e -> {
-			int id = vista.getIdSeleccionado();
-			if(id == -1) {
-				// Si no hay selección, intentar con el campo de búsqueda
-				id = vista.getIdBusqueda();
-				if(id == -1) {
-					vista.mostrarPopup("Debe seleccionar un producto en la tabla o ingresar un ID válido");
-					return;
-				}
-			}
-			eliminarProducto(id);
-		});
+		vista.addEliminarProductoListener(e -> eliminarProductoDesdeVista());
 		vista.addListarProductosListener(e -> listarProductos());
 	}
 
+	private void mostrarFormularioCrear() {
+		modoEdicion = false;
+		idEdicion = -1;
+		vista.setNombre("");
+		vista.setPrecio(0);
+		vista.setStock(0);
+		vista.mostrarDialogo(false); // Mostrar formulario para crear
+	}
+
+	private void mostrarFormularioActualizar() {
+		int id = vista.getIdSeleccionado();
+		if (id == -1) {
+			id = vista.getIdBusqueda();
+			if (id == -1) {
+				vista.mostrarPopup("Debe seleccionar un producto en la tabla o ingresar un ID válido");
+				return;
+			}
+		}
+		try {
+			Producto p = productoDaoImpl.buscar(id);
+			modoEdicion = true;
+			idEdicion = id;
+			vista.setNombre(p.getNombre());
+			vista.setPrecio(p.getPrecio());
+			vista.setStock(p.getStock());
+			vista.mostrarDialogo(true); // Mostrar formulario para actualizar
+		} catch (IllegalArgumentException ex) {
+			vista.mostrarPopup("Producto no encontrado");
+		}
+	}
+
+	private void guardarProducto() {
+		String nombre = vista.getNombre();
+		double precio = vista.getPrecio();
+		int stock = vista.getStock();
+
+		if (nombre.isEmpty()) {
+			vista.mostrarPopup("El nombre es obligatorio");
+			return;
+		}
+		if (precio <= 0) {
+			vista.mostrarPopup("El precio debe ser mayor que cero");
+			return;
+		}
+		if (stock < 0) {
+			vista.mostrarPopup("El stock no puede ser negativo");
+			return;
+		}
+
+		if (modoEdicion && idEdicion != -1) {
+			actualizarProducto(idEdicion, nombre, precio, stock);
+		} else {
+			crearProducto(nombre, precio, stock);
+		}
+		vista.cerrarDialogo();
+	}
+
+	private void eliminarProductoDesdeVista() {
+		int id = vista.getIdSeleccionado();
+		if (id == -1) {
+			id = vista.getIdBusqueda();
+			if (id == -1) {
+				vista.mostrarPopup("Debe seleccionar un producto en la tabla o ingresar un ID válido");
+				return;
+			}
+		}
+		eliminarProducto(id);
+	}
+
 	public void iniciar() {
-		System.out.println("Iniciando vista de productos...");
 		vista.setVisible(true);
-		System.out.println("Vista de productos mostrada");
 	}
 
 	public void buscarProducto(int idProducto) {
@@ -126,8 +129,13 @@ public class ProductoControlador {
 
 		Random random = new Random();
 		int id = random.nextInt(1000) + 1;
-		productoDaoImpl.insertar(new Producto(id, nombre, precio, stock));
-		vista.mostrarPopup("Producto creado con ID: " + id);
+		try {
+			productoDaoImpl.insertar(new Producto(id, nombre, precio, stock));
+			vista.mostrarPopup("Producto creado con ID: " + id);
+			this.listarProductos();
+		} catch (IllegalArgumentException ex) {
+			vista.mostrarPopup(ex.getMessage());
+		}
 	}
 
 	public void actualizarProducto(int idProducto, String nombre, double precio, int stock) {
@@ -147,37 +155,41 @@ public class ProductoControlador {
 			vista.mostrarPopup("El stock no puede ser negativo");
 			return;
 		}
-		
-		productoDaoImpl.actualizar(new Producto(idProducto, nombre, precio, stock));
-		producto = productoDaoImpl.buscar(idProducto);
-		vista.mostrarPopup("Producto actualizado");
+
+		try {
+			productoDaoImpl.actualizar(new Producto(idProducto, nombre, precio, stock));
+			producto = productoDaoImpl.buscar(idProducto);
+			this.buscarProducto(idProducto);
+			vista.mostrarPopup("Producto actualizado");
+		} catch (IllegalArgumentException ex) {
+			vista.mostrarPopup(ex.getMessage());
+		}
 	}
 
 	public void eliminarProducto(int idProducto) {
-		if(idProducto <= 0) {
+		if (idProducto <= 0) {
 			vista.mostrarPopup("El ID del producto debe ser mayor que cero");
 			return;
 		}
 		try {
 			productoDaoImpl.eliminar(idProducto);
 			vista.mostrarPopup("Producto eliminado");
+			this.listarProductos();
 		} catch (IllegalArgumentException e) {
 			vista.mostrarPopup("Producto no encontrado");
-			return;
 		}
 	}
 
 	public void listarProductos() {
 		try {
 			List<Producto> productos = productoDaoImpl.listar();
-			if(productos.isEmpty()) {
+			if (productos.isEmpty()) {
 				vista.mostrarPopup("No hay productos para mostrar");
 				return;
 			}
 			vista.mostrarProductos(productos);
 		} catch (IllegalArgumentException e) {
 			vista.mostrarPopup("No hay productos para mostrar");
-			return;
 		}
 	}
 }

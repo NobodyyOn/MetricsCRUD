@@ -32,6 +32,7 @@ public class ProductoVista extends JFrame {
     private final JButton btnGuardar;
     private final JButton btnCancelar;
 
+    @SuppressWarnings("unused")
     public ProductoVista() {
         super("Administración de Productos");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
