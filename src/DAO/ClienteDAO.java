@@ -8,7 +8,7 @@ interface ClienteDAO {
 
     public List<Cliente> listar();
 
-    public Cliente seleccionar(int idCliente);
+    public Cliente buscar(int idCliente);
 
     public void insertar(Cliente nuevoCliente);
 

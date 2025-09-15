@@ -13,11 +13,6 @@ public class ClienteDAOimpl implements ClienteDAO {
         return jsonUtil.leerJson(ruta, Cliente.class);
     }
 
-    public Cliente seleccionar(int idCliente) {
-        return buscarCliente(idCliente);
-    }
-
-
     public void insertar(Cliente nuevoCliente) {
 
         if (existeCliente(nuevoCliente.getId())) {
@@ -39,9 +34,6 @@ public class ClienteDAOimpl implements ClienteDAO {
                 break;
             }
         }
-        if (index == -1) {
-            throw new IllegalArgumentException("El cliente no existe");
-        }
         clientes.set(index, clienteActualizado);
         jsonUtil.escribirJson(ruta, clientes);
 
@@ -56,15 +48,12 @@ public class ClienteDAOimpl implements ClienteDAO {
                 break;
             }
         }
-        if (index == -1) {
-            throw new IllegalArgumentException("El cliente no existe");
-        }
         clientes.remove(index);
         jsonUtil.escribirJson(ruta, clientes);
 
     }
 
-    private Cliente buscarCliente(int idCliente) {
+    public Cliente buscar(int idCliente) {
         return listar().stream()
                 .filter(c -> c.getId() == idCliente)
                 .findFirst()

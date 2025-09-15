@@ -128,6 +128,10 @@ public class ClienteVista extends JFrame {
         btnCancelar.addActionListener(e -> dialogo.setVisible(false));
     }
 
+    public void mostrarPopup(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje);
+    }
+
     // Métodos de interfaz del diálogo
     public void mostrarDialogo(boolean edicion) {
         if (!edicion) {
