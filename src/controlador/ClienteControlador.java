@@ -8,150 +8,154 @@ import java.util.Random;
 import java.util.List;
 
 public class ClienteControlador {
-	private boolean modoEdicion = false;
-	private int idEdicion = -1;
+    private boolean modoEdicion = false;
+    private int idEdicion = -1;
 
-	private ClienteVista vista;
-	private ClienteDAO clienteDaoImpl;
-	private Cliente cliente;
+    private ClienteVista vista;
+    private ClienteDAO clienteDaoImpl;
+    private Cliente cliente;
 
+    public ClienteControlador(ClienteVista vista, ClienteDAO clienteDaoImpl) {
+        this.vista = vista;
+        this.clienteDaoImpl = clienteDaoImpl;
 
-	public ClienteControlador(ClienteVista vista, ClienteDAO clienteDaoImpl) {
-		this.vista = vista;
-		this.clienteDaoImpl = clienteDaoImpl;
-		
-		vista.addCrearClienteListener(e -> {
-			modoEdicion = false;
-			idEdicion = -1;
-			vista.setNombre("");
-			vista.setTelefono("");
-			vista.setDireccion("");
-			vista.mostrarDialogo(false); // Mostrar formulario para crear
-		});
+        inicializarListeners();
+    }
 
-		vista.addActualizarClienteListener(e -> {
-			int id = vista.getIdSeleccionado();
-			if(id == -1) {
-				// Si no hay selección, intentar con el campo de búsqueda
-				id = vista.getIdBusqueda();
-				if(id == -1) {
-					vista.mostrarPopup("Debe seleccionar un cliente en la tabla o ingresar un ID válido");
-					return;
-				}
-			}
-			// Buscar el cliente y mostrar el formulario
-			try {
-				Cliente c = clienteDaoImpl.buscar(id);
-				modoEdicion = true;
-				idEdicion = id;
-				vista.setNombre(c.getNombre());
-				vista.setTelefono(c.getTelefono());
-				vista.setDireccion(c.getDireccion());
-				vista.mostrarDialogo(true); // Mostrar formulario para actualizar
-			} catch (IllegalArgumentException ex) {
-				vista.mostrarPopup("Cliente no encontrado");
-			}
-		});
+    @SuppressWarnings("unused")
+	private void inicializarListeners() {
+        vista.addCrearClienteListener(e -> mostrarFormularioCrear());
+        vista.addActualizarClienteListener(e -> mostrarFormularioActualizar());
+        vista.addGuardarClienteListener(e -> guardarCliente());
+        vista.addLeerClienteListener(e -> buscarCliente(vista.getIdBusqueda()));
+        vista.addEliminarClienteListener(e -> eliminarClienteDesdeVista());
+        vista.addListarClientesListener(e -> listarClientes());
+    }
 
-		// Listener para el botón Guardar del formulario
-		vista.addGuardarClienteListener(e -> {
-			String nombre = vista.getNombre();
-			String telefono = vista.getTelefono();
-			String direccion = vista.getDireccion();
-			if (nombre.isEmpty() || telefono.isEmpty() || direccion.isEmpty()) {
-				vista.mostrarPopup("Todos los campos son obligatorios");
-				return;
-			}
-			if (modoEdicion && idEdicion != -1) {
-				actualizarCliente(idEdicion, nombre, telefono, direccion);
-			} else {
-				crearCliente(nombre, telefono, direccion);
-			}
-			vista.cerrarDialogo();
-		});
-        // (Eliminado: la lógica de validación y actualización se maneja en el listener de Guardar y en el formulario)
+    private void mostrarFormularioCrear() {
+        modoEdicion = false;
+        idEdicion = -1;
+        vista.setNombre("");
+        vista.setTelefono("");
+        vista.setDireccion("");
+        vista.mostrarDialogo(false); // Mostrar formulario para crear
+    }
 
-		vista.addLeerClienteListener(e -> buscarCliente(vista.getIdBusqueda()));
-        // (Eliminado: la lógica de actualización se maneja en el listener de Guardar)
-		vista.addEliminarClienteListener(e -> {
-			int id = vista.getIdSeleccionado();
-			if(id == -1) {
-				// Si no hay selección, intentar con el campo de búsqueda
-				id = vista.getIdBusqueda();
-				if(id == -1) {
-					vista.mostrarPopup("Debe seleccionar un cliente en la tabla o ingresar un ID válido");
-					return;
-				}
-			}
-			eliminarCliente(id);
-		});
-		vista.addListarClientesListener(e -> listarClientes());
-	}
+    private void mostrarFormularioActualizar() {
+        int id = vista.getIdSeleccionado();
+        if (id == -1) {
+            id = vista.getIdBusqueda();
+            if (id == -1) {
+                vista.mostrarPopup("Debe seleccionar un cliente en la tabla o ingresar un ID válido");
+                return;
+            }
+        }
+        try {
+            Cliente c = clienteDaoImpl.buscar(id);
+            modoEdicion = true;
+            idEdicion = id;
+            vista.setNombre(c.getNombre());
+            vista.setTelefono(c.getTelefono());
+            vista.setDireccion(c.getDireccion());
+            vista.mostrarDialogo(true); // Mostrar formulario para actualizar
+        } catch (IllegalArgumentException ex) {
+            vista.mostrarPopup("Cliente no encontrado");
+        }
+    }
 
-	public void iniciar() {
-		vista.setVisible(true);
-	}
+    private void guardarCliente() {
+        String nombre = vista.getNombre();
+        String telefono = vista.getTelefono();
+        String direccion = vista.getDireccion();
+        if (nombre.isEmpty() || telefono.isEmpty() || direccion.isEmpty()) {
+            vista.mostrarPopup("Todos los campos son obligatorios");
+            return;
+        }
+        if (modoEdicion && idEdicion != -1) {
+            actualizarCliente(idEdicion, nombre, telefono, direccion);
+        } else {
+            crearCliente(nombre, telefono, direccion);
+        }
+        vista.cerrarDialogo();
+    }
 
-	public void buscarCliente(int idCliente) {
-		
-		try {
-			cliente = clienteDaoImpl.buscar(idCliente);
-			vista.mostrarClientes(List.of(cliente));
-		} catch (IllegalArgumentException e) {
-			vista.mostrarPopup("Cliente no encontrado");
-		}
-	}
+    private void eliminarClienteDesdeVista() {
+        int id = vista.getIdSeleccionado();
+        if (id == -1) {
+            id = vista.getIdBusqueda();
+            if (id == -1) {
+                vista.mostrarPopup("Debe seleccionar un cliente en la tabla o ingresar un ID válido");
+                return;
+            }
+        }
+        eliminarCliente(id);
+    }
 
-	public void crearCliente(String nombre, String telefono, String direccion) {
-		if (nombre == "" || telefono == "" || direccion == "") {
-			vista.mostrarPopup("Nombre, teléfono y dirección no pueden estar vacíos");
-			return;
-		}
+    public void iniciar() {
+        vista.setVisible(true);
+    }
 
-		Random random = new Random();
-		int id = random.nextInt(1000) + 1;
-		clienteDaoImpl.insertar(new Cliente(id, nombre, telefono, direccion));
-		vista.mostrarPopup("Cliente creado con ID: " + id);
-	}
+    public void buscarCliente(int idCliente) {
+        try {
+            cliente = clienteDaoImpl.buscar(idCliente);
+            vista.mostrarClientes(List.of(cliente));
+        } catch (IllegalArgumentException e) {
+            vista.mostrarPopup("Cliente no encontrado");
+        }
+    }
 
+    public void crearCliente(String nombre, String telefono, String direccion) {
+        if (nombre.isEmpty() || telefono.isEmpty() || direccion.isEmpty()) {
+            vista.mostrarPopup("Nombre, teléfono y dirección no pueden estar vacíos");
+            return;
+        }
+        Random random = new Random();
+        int id = random.nextInt(1000) + 1;
+        try {
+            clienteDaoImpl.insertar(new Cliente(id, nombre, telefono, direccion));
+            vista.mostrarPopup("Cliente creado con ID: " + id);
+        } catch (IllegalArgumentException ex) {
+            vista.mostrarPopup(ex.getMessage());
+        }
+    }
 
-	public void actualizarCliente(int idCliente, String nombre, String telefono, String direccion) {
-		if (idCliente == -1 || idCliente <= 0) {
-			vista.mostrarPopup("El ID del cliente debe ser mayor que cero");
-			return;
-		}
-		clienteDaoImpl.actualizar(new Cliente(idCliente, nombre, telefono, direccion));
-		cliente = clienteDaoImpl.buscar(idCliente);
-		vista.mostrarPopup("Cliente actualizado");
-	}
+    public void actualizarCliente(int idCliente, String nombre, String telefono, String direccion) {
+        if (idCliente == -1 || idCliente <= 0) {
+            vista.mostrarPopup("El ID del cliente debe ser mayor que cero");
+            return;
+        }
+        try {
+            clienteDaoImpl.actualizar(new Cliente(idCliente, nombre, telefono, direccion));
+            cliente = clienteDaoImpl.buscar(idCliente);
+            vista.mostrarPopup("Cliente actualizado");
+        } catch (IllegalArgumentException ex) {
+            vista.mostrarPopup(ex.getMessage());
+        }
+    }
 
-	public void eliminarCliente(int idCliente) {
-		if(idCliente <= 0) {
-			vista.mostrarPopup("El ID del cliente debe ser mayor que cero");
-			return;
-		}
-		try {
-			clienteDaoImpl.eliminar(idCliente);
-			vista.mostrarPopup("Cliente eliminado");
-		} catch (IllegalArgumentException e) {
-			vista.mostrarPopup("Cliente no encontrado");
-			return;
-		}
-	}
+    public void eliminarCliente(int idCliente) {
+        if (idCliente <= 0) {
+            vista.mostrarPopup("El ID del cliente debe ser mayor que cero");
+            return;
+        }
+        try {
+            clienteDaoImpl.eliminar(idCliente);
+            vista.mostrarPopup("Cliente eliminado");
+        } catch (IllegalArgumentException e) {
+            vista.mostrarPopup("Cliente no encontrado");
+        }
+    }
 
-	public void listarClientes() {
-		try {
-			List<Cliente> clientes = clienteDaoImpl.listar();
-			if(clientes.isEmpty()) {
-				vista.mostrarPopup("No hay clientes para mostrar");
-				return;
-			}
-			vista.mostrarClientes(clientes);
-		} catch (IllegalArgumentException e) {
-			vista.mostrarPopup("No hay clientes para mostrar");
-			return;
-		}
-		
-	}
-
+    public void listarClientes() {
+        try {
+            List<Cliente> clientes = clienteDaoImpl.listar();
+            if (clientes.isEmpty()) {
+                vista.mostrarPopup("No hay clientes para mostrar");
+                return;
+            }
+            vista.mostrarClientes(clientes);
+        } catch (IllegalArgumentException e) {
+            vista.mostrarPopup("No hay clientes para mostrar");
+        }
+    }
 }

@@ -29,7 +29,6 @@ public class JsonUtil {
 
     public <T> void escribirJson(String ruta, List<T> datos) {
         checkJson(ruta);
-        System.out.println(ruta);
         try (FileWriter writer = new FileWriter(ruta)) {
             gson.toJson(datos, writer);
         } catch (IOException e) {
@@ -40,7 +39,6 @@ public class JsonUtil {
     private void checkJson(String ruta) {
         try {
             File archivo = new File(ruta);
-            System.out.println(ruta);
             if (!archivo.exists()) {
                 archivo.createNewFile();
                 try (FileWriter writer = new FileWriter(archivo)) {
@@ -48,7 +46,7 @@ public class JsonUtil {
                 }
             }
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
     }
 }
