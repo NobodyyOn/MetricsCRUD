@@ -1,6 +1,6 @@
 package controlador;
 
-import DAO.ClienteDAOimpl;
+import DAO.ClienteDAO;
 import DAO.ProductoDAO;
 import vista.ClienteVista;
 import vista.MenuGeneral;
@@ -25,7 +25,7 @@ public class MenuControlador {
     private void irClientes() {
         // Lógica para abrir la ventana de clientes
         ClienteControlador clienteCtrl = new ClienteControlador(new ClienteVista(),
-                new ClienteDAOimpl());
+                new ClienteDAO());
         clienteCtrl.iniciar();
     }
 

@@ -1,6 +1,6 @@
 package controlador;
 
-import DAO.ClienteDAOimpl;
+import DAO.ClienteDAO;
 import modelo.Cliente;
 import vista.ClienteVista;
 
@@ -12,11 +12,11 @@ public class ClienteControlador {
 	private int idEdicion = -1;
 
 	private ClienteVista vista;
-	private ClienteDAOimpl clienteDaoImpl;
+	private ClienteDAO clienteDaoImpl;
 	private Cliente cliente;
 
 
-	public ClienteControlador(ClienteVista vista, ClienteDAOimpl clienteDaoImpl) {
+	public ClienteControlador(ClienteVista vista, ClienteDAO clienteDaoImpl) {
 		this.vista = vista;
 		this.clienteDaoImpl = clienteDaoImpl;
 		
