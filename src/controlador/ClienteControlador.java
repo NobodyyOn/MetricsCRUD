@@ -97,7 +97,6 @@ public class ClienteControlador {
 		try {
 			cliente = clienteDaoImpl.buscar(idCliente);
 			vista.mostrarClientes(List.of(cliente));
-			System.out.println(cliente);
 		} catch (IllegalArgumentException e) {
 			vista.mostrarPopup("Cliente no encontrado");
 		}
