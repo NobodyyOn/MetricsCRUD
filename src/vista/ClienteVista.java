@@ -32,6 +32,7 @@ public class ClienteVista extends JFrame {
     private final JButton btnGuardar;
     private final JButton btnCancelar;
 
+    @SuppressWarnings("unused")
     public ClienteVista() {
         super("Administración de Clientes");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
